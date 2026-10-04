@@ -1,0 +1,474 @@
+{
+  "info": {
+    "name": "FinTrack 360 (prototipo educativo — datos simulados)",
+    "description": "Todas las respuestas son datos ficticios. Define la variable \"demoPassword\" con el valor de APP_DEMO_PASSWORD y ejecuta primero \"Iniciar sesión\": el token se guarda solo en la variable \"token\".",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "demoUser",
+      "value": "analista"
+    },
+    {
+      "key": "demoPassword",
+      "value": ""
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "personId",
+      "value": "1"
+    },
+    {
+      "key": "document",
+      "value": "1.000.000.001"
+    }
+  ],
+  "item": [
+    {
+      "name": "Sesión",
+      "item": [
+        {
+          "name": "Iniciar sesión",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('login correcto', () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set('token', pm.response.json().token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{demoUser}}\",\n  \"password\": \"{{demoPassword}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/login"
+          }
+        },
+        {
+          "name": "Usuario actual",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/auth/me"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Perfil 360°",
+      "item": [
+        {
+          "name": "Personas ficticias",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/persons"
+          }
+        },
+        {
+          "name": "Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/persons/{{personId}}/dashboard"
+          }
+        },
+        {
+          "name": "Perfil completo",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/persons/{{personId}}/profile"
+          }
+        },
+        {
+          "name": "Actualizar consulta",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{baseUrl}}/api/persons/{{personId}}/refresh"
+          }
+        },
+        {
+          "name": "Actividad reciente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/persons/{{personId}}/timeline"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Información financiera",
+      "item": [
+        {
+          "name": "Bancos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/persons/{{personId}}/banks"
+          }
+        },
+        {
+          "name": "Cuentas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/persons/{{personId}}/accounts"
+          }
+        },
+        {
+          "name": "Movimientos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/persons/{{personId}}/transactions"
+          }
+        },
+        {
+          "name": "Créditos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/persons/{{personId}}/credits"
+          }
+        },
+        {
+          "name": "Pagos de créditos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/persons/{{personId}}/credit-payments"
+          }
+        },
+        {
+          "name": "Historial crediticio",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/persons/{{personId}}/credit-history"
+          }
+        },
+        {
+          "name": "Score simulado",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/persons/{{personId}}/score"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Debida diligencia",
+      "item": [
+        {
+          "name": "Todas las fuentes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/persons/{{personId}}/due-diligence"
+          }
+        },
+        {
+          "name": "Fuentes por categoría (PEP)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/persons/{{personId}}/due-diligence?category=PEP"
+          }
+        },
+        {
+          "name": "Fuentes no disponibles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/persons/{{personId}}/sources/unavailable"
+          }
+        },
+        {
+          "name": "Listas (coincidencias)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/persons/{{personId}}/sanctions"
+          }
+        },
+        {
+          "name": "PEP (registros)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/persons/{{personId}}/pep"
+          }
+        },
+        {
+          "name": "Antecedentes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/persons/{{personId}}/background"
+          }
+        },
+        {
+          "name": "Procesos judiciales",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/persons/{{personId}}/judicial/processes"
+          }
+        },
+        {
+          "name": "Demandas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/persons/{{personId}}/judicial/lawsuits"
+          }
+        },
+        {
+          "name": "Medidas cautelares",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/persons/{{personId}}/judicial/measures"
+          }
+        },
+        {
+          "name": "Tránsito",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/persons/{{personId}}/traffic"
+          }
+        },
+        {
+          "name": "Noticias e información general",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/persons/{{personId}}/news"
+          }
+        },
+        {
+          "name": "Alertas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/persons/{{personId}}/alerts"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Comentarios, reporte, buscador e IA",
+      "item": [
+        {
+          "name": "Comentarios",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/persons/{{personId}}/comments"
+          }
+        },
+        {
+          "name": "Crear comentario",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"body\": \"Se recomienda revisar el proceso simulado.\"\n}"
+            },
+            "url": "{{baseUrl}}/api/persons/{{personId}}/comments"
+          }
+        },
+        {
+          "name": "Generar reporte",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{baseUrl}}/api/persons/{{personId}}/reports"
+          }
+        },
+        {
+          "name": "Reportes de la persona",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/persons/{{personId}}/reports"
+          }
+        },
+        {
+          "name": "Buscador global",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/search?q=nova"
+          }
+        },
+        {
+          "name": "FinTrack AI",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"question\": \"¿Qué obligaciones están en mora?\"\n}"
+            },
+            "url": "{{baseUrl}}/api/persons/{{personId}}/ai/ask"
+          }
+        },
+        {
+          "name": "Catálogo de bancos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/banks"
+          }
+        },
+        {
+          "name": "Catálogo de fuentes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/sources"
+          }
+        }
+      ]
+    },
+    {
+      "name": "APIs simuladas (mock)",
+      "item": [
+        {
+          "name": "banco-nova: cuentas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/mock/banco-nova/accounts?document={{document}}"
+          }
+        },
+        {
+          "name": "banco-nova: créditos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/mock/banco-nova/credits?document={{document}}"
+          }
+        },
+        {
+          "name": "banco-andino: cuentas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/mock/banco-andino/accounts?document={{document}}"
+          }
+        },
+        {
+          "name": "banco-andino: créditos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/mock/banco-andino/credits?document={{document}}"
+          }
+        },
+        {
+          "name": "banco-capital: cuentas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/mock/banco-capital/accounts?document={{document}}"
+          }
+        },
+        {
+          "name": "banco-capital: créditos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/mock/banco-capital/credits?document={{document}}"
+          }
+        },
+        {
+          "name": "banco-horizonte: cuentas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/mock/banco-horizonte/accounts?document={{document}}"
+          }
+        },
+        {
+          "name": "banco-horizonte: créditos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/mock/banco-horizonte/credits?document={{document}}"
+          }
+        },
+        {
+          "name": "banco-centralia: cuentas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/mock/banco-centralia/accounts?document={{document}}"
+          }
+        },
+        {
+          "name": "banco-centralia: créditos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/mock/banco-centralia/credits?document={{document}}"
+          }
+        },
+        {
+          "name": "Fuente simulada (OFAC SDN)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/mock/sources/RES_OFAC_SDN?document={{document}}&run=1"
+          }
+        }
+      ]
+    }
+  ]
+}
