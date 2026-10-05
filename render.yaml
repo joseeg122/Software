@@ -44,5 +44,6 @@ services:
     envVars:
       - key: PORT
         value: "80"
-      - key: BACKEND_HOSTPORT
-        fromService: { type: web, name: fintrack-api, property: hostport }
+      - key: BACKEND_URL
+        # URL pública de fintrack-api (cópiala de su página en Render si el sufijo es distinto).
+        value: https://fintrack-api-c8v5.onrender.com
