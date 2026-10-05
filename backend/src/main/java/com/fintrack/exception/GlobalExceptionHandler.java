@@ -31,6 +31,11 @@ public class GlobalExceptionHandler {
         return body(HttpStatus.UNAUTHORIZED, "NO_AUTENTICADO", e.getMessage());
     }
 
+    @ExceptionHandler(ForbiddenException.class)
+    ResponseEntity<Map<String, String>> forbidden(ForbiddenException e) {
+        return body(HttpStatus.FORBIDDEN, "SIN_ACCESO", e.getMessage());
+    }
+
     @ExceptionHandler({MethodArgumentNotValidException.class, HttpMessageNotReadableException.class,
             MissingServletRequestParameterException.class, MethodArgumentTypeMismatchException.class})
     ResponseEntity<Map<String, String>> invalid(Exception e) {

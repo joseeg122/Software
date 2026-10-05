@@ -21,7 +21,8 @@ public class LocalDemoApplication {
         if (System.getenv("APP_DEMO_PASSWORD") == null) {
             String password = UUID.randomUUID().toString().substring(0, 13);
             System.setProperty("app.demo.password", password);
-            System.out.println("\n>>> FinTrack 360 (demo local) — usuario: analista · contraseña temporal: " + password + "\n");
+            System.out.println("\n>>> FinTrack 360 (demo local) — contraseña temporal: " + password
+                    + "\n    usuario 'analista' (ve todas las personas) · usuario 'cliente' (solo ve a su persona)\n");
         }
         SpringApplication.run(FinTrackApplication.class, args);
     }

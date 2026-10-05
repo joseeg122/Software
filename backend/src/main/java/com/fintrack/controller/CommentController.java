@@ -5,6 +5,7 @@ import com.fintrack.dto.CommentRequest;
 import com.fintrack.entity.Comment;
 import com.fintrack.exception.NotFoundException;
 import com.fintrack.repository.CommentRepository;
+import com.fintrack.security.CurrentUser;
 import com.fintrack.service.InputGuard;
 import com.fintrack.service.ProfileService;
 import jakarta.validation.Valid;
@@ -49,6 +50,7 @@ public class CommentController {
     @PutMapping("/comments/{id}")
     public Comment update(@PathVariable Long id, @Valid @RequestBody CommentRequest request) {
         Comment comment = find(id);
+        CurrentUser.requireAccess(comment.personId);
         comment.body = InputGuard.check(request.body());
         comment.updatedAt = LocalDateTime.now();
         comments.save(comment);
@@ -59,7 +61,9 @@ public class CommentController {
     @DeleteMapping("/comments/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
-        comments.delete(find(id));
+        Comment comment = find(id);
+        CurrentUser.requireAccess(comment.personId);
+        comments.delete(comment);
         audit.log("COMENTARIO_ELIMINADO", "Comentario " + id);
     }
 

@@ -15,5 +15,7 @@ public class AppUser extends BaseEntity {
     public String passwordHash;
     public String fullName;
     public String role;
+    /** Si no es nulo, el usuario solo puede ver la información de esta persona. */
+    public Long personId;
     public LocalDateTime createdAt;
 }

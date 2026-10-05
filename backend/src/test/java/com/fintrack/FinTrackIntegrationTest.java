@@ -82,6 +82,34 @@ class FinTrackIntegrationTest {
     }
 
     @Test
+    void elClienteSoloVeLaInformacionDeSuPersona() throws Exception {
+        String body = mapper.writeValueAsString(Map.of("username", "cliente", "password", PASSWORD));
+        String response = mvc.perform(post("/api/auth/login").contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        String client = "Bearer " + mapper.readTree(response).get("token").asText();
+        long ownId = jdbc.queryForObject("select person_id from users where username = 'cliente'", Long.class);
+        long otherId = jdbc.queryForObject("select max(id) from persons", Long.class);
+        assertNotEquals(ownId, otherId);
+
+        var persons = mapper.readTree(mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+                        .get("/api/persons").header("Authorization", client))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsByteArray());
+        assertEquals(1, persons.size());
+        assertEquals(ownId, persons.get(0).get("id").asLong());
+
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+                        .get("/api/persons/" + ownId + "/profile").header("Authorization", client))
+                .andExpect(status().isOk());
+        for (String path : new String[] {"/profile", "/accounts", "/credits", "/comments"}) {
+            mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+                            .get("/api/persons/" + otherId + path).header("Authorization", client))
+                    .andExpect(status().isForbidden());
+        }
+        // El analista sí ve a todas las personas.
+        assertEquals(10, get("/api/persons").size());
+    }
+
+    @Test
     void laSemillaCreaLasCantidadesPedidas() {
         assertEquals(10, count("persons"));
         assertEquals(7, count("banks"));

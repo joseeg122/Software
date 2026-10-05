@@ -10,6 +10,7 @@ import com.fintrack.entity.Report;
 import com.fintrack.entity.Source;
 import com.fintrack.repository.BankRepository;
 import com.fintrack.repository.SourceRepository;
+import com.fintrack.security.CurrentUser;
 import com.fintrack.service.InputGuard;
 import com.fintrack.service.ProfileService;
 import com.fintrack.service.ReportService;
@@ -56,12 +57,16 @@ public class ToolsController {
 
     @GetMapping("/reports/{id}")
     public Report report(@PathVariable Long id) {
-        return reports.get(id);
+        Report report = reports.get(id);
+        CurrentUser.requireAccess(report.personId);
+        return report;
     }
 
     @GetMapping("/search")
     public List<SearchResult> search(@RequestParam("q") String query) {
-        return search.search(query);
+        Long own = CurrentUser.restrictedPersonId();
+        return search.search(query).stream()
+                .filter(r -> own == null || r.personId() == null || own.equals(r.personId())).toList();
     }
 
     /** La IA solo recibe el perfil ficticio ya procesado por el backend; no consulta fuentes. */

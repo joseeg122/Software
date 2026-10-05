@@ -251,7 +251,11 @@ export default function Reporte() {
     <>
       <PageTitle title="Reporte" subtitle={`Reporte visual del perfil simulado de ${person.fullName}.`}>
         <Button onClick={generate} disabled={busy}>{busy ? 'Generando…' : 'Generar reporte'}</Button>
-        {current && <Button variant="ghost" onClick={() => window.print()}>Imprimir / PDF</Button>}
+        {current && (
+          <Button variant="ghost" onClick={() => window.print()}>
+            Descargar PDF
+          </Button>
+        )}
       </PageTitle>
       {error && <div className="mb-4"><ErrorBox message={error} /></div>}
 
@@ -269,6 +273,13 @@ export default function Reporte() {
             </button>
           ))}
         </div>
+      )}
+
+      {current && (
+        <p className="no-print mb-3 text-xs text-slate-500">
+          Al pulsar "Descargar PDF" elige "Guardar como PDF" como destino de impresión; el archivo resultante es el que
+          puedes enviar.
+        </p>
       )}
 
       {current ? (

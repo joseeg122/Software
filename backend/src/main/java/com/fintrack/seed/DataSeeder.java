@@ -87,6 +87,7 @@ public class DataSeeder implements CommandLineRunner {
     public void run(String... args) {
         seedDemoUser();
         if (em.createQuery("select count(p) from Person p", Long.class).getSingleResult() > 0) {
+            seedClientUser();
             return;
         }
         Random rnd = new Random(42);
@@ -113,6 +114,26 @@ public class DataSeeder implements CommandLineRunner {
         for (Person person : persons) {
             dueDiligence.run(person.id, "semilla", BASE_TS, true);
         }
+        seedClientUser();
+    }
+
+    /**
+     * Usuario restringido a UNA persona (la primera): solo ve la información de esa persona.
+     * Usa la misma contraseña de demostración; el analista conserva acceso a todas.
+     */
+    private void seedClientUser() {
+        Long personId = em.createQuery("select min(p.id) from Person p", Long.class).getSingleResult();
+        if (personId == null || users.findByUsername("cliente").isPresent()) {
+            return;
+        }
+        AppUser client = new AppUser();
+        client.username = "cliente";
+        client.passwordHash = encoder.encode(demoPassword);
+        client.fullName = "Cliente de demostración";
+        client.role = "CLIENTE";
+        client.personId = personId;
+        client.createdAt = LocalDateTime.now();
+        users.save(client);
     }
 
     /** El usuario de demostración toma su contraseña de APP_DEMO_PASSWORD; nunca del código. */

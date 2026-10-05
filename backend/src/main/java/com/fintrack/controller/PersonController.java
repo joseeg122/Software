@@ -5,6 +5,7 @@ import com.fintrack.dto.DashboardDto;
 import com.fintrack.dto.ProfileSnapshot;
 import com.fintrack.entity.*;
 import com.fintrack.repository.PersonRepository;
+import com.fintrack.security.CurrentUser;
 import com.fintrack.service.DueDiligenceService;
 import com.fintrack.service.ProfileService;
 import java.time.LocalDateTime;
@@ -31,7 +32,8 @@ public class PersonController {
 
     @GetMapping
     public List<Person> list() {
-        return persons.findAll(Sort.by("id"));
+        Long own = CurrentUser.restrictedPersonId();
+        return own == null ? persons.findAll(Sort.by("id")) : persons.findAllById(List.of(own));
     }
 
     @GetMapping("/{id}")

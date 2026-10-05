@@ -33,7 +33,7 @@ export default function Layout() {
         {DISCLAIMER}
       </div>
       <div className="flex flex-1">
-        <aside className="no-print w-52 shrink-0 bg-slate-900 text-slate-300">
+        <aside className="no-print sticky top-0 h-screen w-52 shrink-0 self-start overflow-y-auto bg-slate-900 text-slate-300">
           <div className="px-4 py-4 text-lg font-bold text-white">
             FinTrack <span className="text-indigo-400">360</span>
           </div>

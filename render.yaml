@@ -1,0 +1,48 @@
+# FinTrack 360 — PROTOTIPO EDUCATIVO, DATOS COMPLETAMENTE SIMULADOS.
+# Despliegue en Render (Blueprint). Los secretos se generan en Render; no hay ninguno en el código.
+databases:
+  - name: fintrack-db
+    databaseName: fintrack
+    user: fintrack
+    plan: free
+
+services:
+  - type: web
+    name: fintrack-api
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free
+    envVars:
+      - key: SERVER_PORT
+        value: "10000"
+      - key: JAVA_TOOL_OPTIONS
+        value: "-Xmx320m"
+      - key: TZ
+        value: America/Bogota
+      - key: DB_HOST
+        fromDatabase: { name: fintrack-db, property: host }
+      - key: DB_PORT
+        fromDatabase: { name: fintrack-db, property: port }
+      - key: DB_NAME
+        fromDatabase: { name: fintrack-db, property: database }
+      - key: DB_USER
+        fromDatabase: { name: fintrack-db, property: user }
+      - key: DB_PASSWORD
+        fromDatabase: { name: fintrack-db, property: password }
+      - key: JWT_SECRET
+        generateValue: true
+      - key: APP_DEMO_PASSWORD
+        generateValue: true
+
+  - type: web
+    name: fintrack-web
+    runtime: docker
+    dockerfilePath: ./frontend/Dockerfile
+    dockerContext: ./frontend
+    plan: free
+    envVars:
+      - key: PORT
+        value: "80"
+      - key: BACKEND_HOSTPORT
+        fromService: { type: web, name: fintrack-api, property: hostport }

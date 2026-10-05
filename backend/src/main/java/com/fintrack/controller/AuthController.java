@@ -33,7 +33,7 @@ public class AuthController {
                 .filter(u -> encoder.matches(request.password(), u.passwordHash))
                 .orElseThrow(() -> new UnauthorizedException("Usuario o contraseña incorrectos."));
         audit.log("LOGIN", "Inicio de sesión de " + user.username);
-        return new LoginResponse(jwt.generate(user.username, user.role), user.username, user.fullName, user.role);
+        return new LoginResponse(jwt.generate(user.username, user.role, user.personId), user.username, user.fullName, user.role);
     }
 
     @GetMapping("/me")
