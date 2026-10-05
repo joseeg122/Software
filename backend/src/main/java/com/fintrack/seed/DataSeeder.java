@@ -123,16 +123,21 @@ public class DataSeeder implements CommandLineRunner {
      */
     private void seedClientUser() {
         Long personId = em.createQuery("select min(p.id) from Person p", Long.class).getSingleResult();
-        if (personId == null || users.findByUsername("cliente").isPresent()) {
+        if (personId == null) {
             return;
         }
-        AppUser client = new AppUser();
+        AppUser client = users.findByUsername("cliente").orElseGet(AppUser::new);
+        if (client.id != null && encoder.matches(demoPassword, client.passwordHash)) {
+            return;
+        }
         client.username = "cliente";
         client.passwordHash = encoder.encode(demoPassword);
         client.fullName = "Cliente de demostración";
         client.role = "CLIENTE";
         client.personId = personId;
-        client.createdAt = LocalDateTime.now();
+        if (client.createdAt == null) {
+            client.createdAt = LocalDateTime.now();
+        }
         users.save(client);
     }
 
